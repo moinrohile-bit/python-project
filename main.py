@@ -5,63 +5,59 @@
 from groq import generate_response
 # from groq import generate_response
 
-def run_activity():
-    print("ZERO-SHOT, ONE-SHOT & FEW-SHOT LEARNING ACTIVITY")
 
-    category = input("Enter a category (e.g., animal, food, city): ").strip()
-    item = input(f"Enter a specific {category} to classify: ").strip()
-
-    if not category or not item:
-        print("Please fill in both fields to run the activity.")
+def bias_mitigation_activity():
+    print("\n=== BIAS MITIGATION ACTIVITY ===\n")
+    prompt = input("Enter a prompt to explore bias (e.g., 'Describe the ideal doctor'): ").strip()
+    if not prompt:
+        print("Please enter a prompt to run the activity.")
         return
 
-    # Zero-shot example
-    zero_shot = f"Is {item} a {category}? Answer yes or no."
-    print("\n--- ZERO-SHOT LEARNING ---")
-    print(f"Response: {generate_response(zero_shot, temperature=0.3, max_tokens=1024)}")
+    initial_response = generate_response(prompt, temperature=0.3, max_tokens=1024)
+    print(f"\nInitial AI Response: {initial_response}")
 
-    # One-shot example
-    one_shot = f"""Example:
-Category: fruit
-Item: apple
-Answer: Yes, apple is a fruit.
+    modified_prompt = input(
+        "Modify the prompt to make it more neutral (e.g., 'Describe the qualities of a doctor'): "
+    ).strip()
+    if modified_prompt:
+        modified_response = generate_response(modified_prompt, temperature=0.3, max_tokens=1024)
+        print(f"\nModified AI Response (Neutral): {modified_response}")
+    else:
+        print("No modified prompt entered. Skipping neutral response.")
 
-Now you try:
-Category: {category}
-Item: {item}
-Answer:"""
-    print("\n--- ONE-SHOT LEARNING ---")
-    print(f"Response: {generate_response(one_shot, temperature=0.3, max_tokens=1024)}")
+def token_limit_activity():
+    print("\n=== TOKEN LIMIT ACTIVITY ===\n")
+    long_prompt = input(
+        "Enter a long prompt (more than 300 words, e.g., a detailed story or description): "
+    ).strip()
 
-    # Few-shot example (kept same as your original prompt format)
-    few_shot = f"""Example 1:
-Category: fruit
-Item: apple
-Answer: Yes, apple is a fruit.
+    if long_prompt:
+        long_response = generate_response(long_prompt, temperature=0.3, max_tokens=1024)
+        preview = (long_response[:500] + "...") if len(long_response) > 500 else long_response
+        print(f"\nResponse to Long Prompt: {preview}")
+    else:
+        print("No long prompt entered. Skipping long prompt response.")
 
-Now you try:
-Category: {category}
-Item: {item}
-Answer:"""
-    print("\n--- FEW-SHOT LEARNING ---")
-    print(f"Response: {generate_response(few_shot, temperature=0.3, max_tokens=1024)}")
+    short_prompt = input("Now, condense the prompt to be more concise: ").strip()
+    if short_prompt:
+        short_response = generate_response(short_prompt, temperature=0.3, max_tokens=1024)
+        print(f"\nResponse to Condensed Prompt: {short_response}")
+    else:
+        print("No condensed prompt entered. Skipping condensed prompt response.")
 
-    # Creative task
-    creative_prompt = f"""Write a one-sentence story about the given word.
+def run_activity():
+    print("\n=== AI Learning Activity ===")
+    print("Choose an activity:")
+    print("1) Bias Mitigation")
+    print("2) Token Limits")
+    choice = input("> ").strip()
 
-Example 1: Word: moon
-Story: The moon lit up the night sky as a little astronaut began an exciting space adventure.
-
-Word: {item}
-Story:"""
-    print("\n--- CREATIVE FEW-SHOT EXAMPLE ---")
-    print(f"Response: {generate_response(creative_prompt, temperature=0.7, max_tokens=1024)}")
-
-    # Reflection questions
-    print("\n--- REFLECTION QUESTIONS ---")
-    print("1. How did the responses differ between zero-shot, one-shot, and few-shot?")
-    print("2. Which approach gave the most helpful response?")
-    print("3. How did the examples influence the model's output?")
+    if choice == "1":
+        bias_mitigation_activity()
+    elif choice == "2":
+        token_limit_activity()
+    else:
+        print("Invalid choice. Please choose 1 or 2.")
 
 if __name__ == "__main__":
     run_activity()
