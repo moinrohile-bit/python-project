@@ -8,7 +8,7 @@ MODELS = getattr(
 )
 
 def generate_response(prompt: str, temperature: float = 0.3, max_tokens: int = 512) -> str:
-    key = getattr(config, "hf_api_key", None)
+    key = getattr(config, "HF_API_KEY", None)
     if not key:
         return "Error: HF_API_KEY missing in config.py"
 
